@@ -1,6 +1,6 @@
 package eu.nuchs.semver
 
-class ProjectVersion {
+class ProjectVersion implements Comparable<ProjectVersion> {
 
   def ProjectVersion (Map version=[:]) {
     versionInfo << version
@@ -27,6 +27,15 @@ class ProjectVersion {
   def majorRelease () {
     versionInfo.major++
     resetParts(['patch', 'minor'], ['tag', 'metaInfo'])
+  }
+
+  int compareTo (ProjectVersion other) {
+    return major() <=> other.major() ?:
+           minor() <=> other.minor() ?:
+           patch() <=> other.patch() ?:
+           tag() == '' && other.tag() != '' ?  1 :
+           tag() != '' && other.tag() == '' ? -1 :
+           tag().compareTo(other.tag())
   }
 
   int major() { versionInfo.major }
