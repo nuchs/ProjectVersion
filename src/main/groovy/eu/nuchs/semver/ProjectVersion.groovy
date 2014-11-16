@@ -8,25 +8,25 @@ class ProjectVersion implements Comparable<ProjectVersion> {
     ['tag', 'metaInfo'].each { part -> validateString(part) } 
   }
 
-  def normalBuild (Map buildInfo=[:]) {
-    versionInfo.tag = buildInfo.get('tag', '')
-    versionInfo.metaInfo = buildInfo.get('metaInfo', '')
-    ['tag', 'metaInfo'].each { part -> validateString(part) } 
+  def incrementMajorVersion () {
+    versionInfo.major++
+    resetParts(['patch', 'minor'], ['tag', 'metaInfo'])
   }
 
-  def patchRelease () {
-    versionInfo.patch++
-    resetParts([], ['tag', 'metaInfo'])
-  }
-
-  def minorRelease () {
+  def incrementMinorVersion () {
     versionInfo.minor++
     resetParts(['patch'], ['tag', 'metaInfo'])
   }
 
-  def majorRelease () {
-    versionInfo.major++
-    resetParts(['patch', 'minor'], ['tag', 'metaInfo'])
+  def incrementPatchVersion () {
+    versionInfo.patch++
+    resetParts([], ['tag', 'metaInfo'])
+  }
+
+  def addPreReleaseDetails (Map buildInfo=[:]) {
+    versionInfo.tag = buildInfo.get('tag', '')
+    versionInfo.metaInfo = buildInfo.get('metaInfo', '')
+    ['tag', 'metaInfo'].each { part -> validateString(part) } 
   }
 
   int major() { versionInfo.major }
@@ -42,20 +42,13 @@ class ProjectVersion implements Comparable<ProjectVersion> {
   }
 
   int compareTo (ProjectVersion other) {
-    return major() <=> other.major() ?:
-           minor() <=> other.minor() ?:
-           patch() <=> other.patch() ?:
-           tag() == '' && other.tag() != '' ?  1 :
-           tag() != '' && other.tag() == '' ? -1 :
-           tag().compareTo(other.tag())
+    major() <=> other.major() ?:
+    minor() <=> other.minor() ?:
+    patch() <=> other.patch() ?:
+    compareTags(other.tag())
   }
 
   /* ----- Private Implementation ----- */
-
-  private def resetParts (List numberParts, List stringParts) {
-    numberParts.each { part -> versionInfo[part] = 0 }
-    stringParts.each { part -> versionInfo[part] = ''}
-  }
 
   private def validateNumber (String part) {
     if (isNotANumber(part) || isNegative(part)) {
@@ -73,16 +66,27 @@ class ProjectVersion implements Comparable<ProjectVersion> {
     !(versionInfo[part] instanceof Integer)
   }
 
-  private def isNotAString (String part) {
-    !(versionInfo[part] instanceof String)
-  }
-
   private def isNegative (String part) {
     versionInfo[part] < 0
   }
 
+  private def isNotAString (String part) {
+    !(versionInfo[part] instanceof String)
+  }
+
   private def containsInvalidCharacters (String part) {
     !(versionInfo[part] ==~ /([a-zA-Z0-9\.]+)?/)
+  }
+
+  private def resetParts (List numberParts, List stringParts) {
+    numberParts.each { part -> versionInfo[part] = 0 }
+    stringParts.each { part -> versionInfo[part] = ''}
+  }
+
+  private int compareTags ( String otherTag ) {
+    tag() == '' && otherTag != '' ?  1 :
+    tag() != '' && otherTag == '' ? -1 :
+    tag().compareTo(otherTag)
   }
 
   private Map versionInfo = [

@@ -4,110 +4,110 @@ import spock.lang.*
 
 class ProjectVersionReleaseTests extends Specification {
 
-  def 'Doing a patch release should reset the tag' () {
+  def 'Incrementing the patch version should reset the tag' () {
     given: 'The version is 0.1.0-bacon.1'  
       def sut = new ProjectVersion(tag:'bacon.1')
     when: 'I do a patch release'
-      sut.patchRelease()
+      sut.incrementPatchVersion()
     then: 'The version tag should be reset'
       sut.tag() == ''
   }
 
-  def 'Doing a patch release should reset the meta info' () {
+  def 'Incrementing the patch version should reset the meta info' () {
     given: 'The version is 0.1.0+bacon.1'  
       def sut = new ProjectVersion(metaInfo:'bacon.1')
     when: 'I do a patch release'
-      sut.patchRelease()
+      sut.incrementPatchVersion()
     then: 'The version meta info should be reset'
       sut.metaInfo() == ''
   }
 
-  def 'Doing a patch release should increment the patch version' () {
+  def 'Incrementing the patch version should add one to the patch version' () {
     given: 'The version is 0.1.0'  
       def sut = new ProjectVersion()
     when: 'I do a patch release'
-      sut.patchRelease()
+      sut.incrementPatchVersion()
     then: 'The patch version should be one'
       sut.patch() == 1
   }
 
-  def 'Doing a minor release should reset the tag' () {
+  def 'Incrementing the minor version should reset the tag' () {
     given: 'The version is 0.1.0-bacon.1'  
       def sut = new ProjectVersion(tag:'bacon.1')
     when: 'I do a minor release'
-      sut.minorRelease()
+      sut.incrementMinorVersion()
     then: 'The version tag should be reset'
       sut.tag() == ''
   }
 
-  def 'Doing a minor release should reset the meta info' () {
+  def 'Incrementing the minor version should reset the meta info' () {
     given: 'The version is 0.1.0+bacon.1'  
       def sut = new ProjectVersion(metaInfo:'bacon.1')
     when: 'I do a minor release'
-      sut.minorRelease()
+      sut.incrementMinorVersion()
     then: 'The version meta info should be reset'
       sut.metaInfo() == ''
   }
 
-  def 'Doing a minor release should reset the patch version' () {
+  def 'Incrementing the minor version should reset the patch version' () {
     given: 'The version is 0.1.1'  
       def sut = new ProjectVersion(patch:1)
     when: 'I do a minor release'
-      sut.minorRelease()
+      sut.incrementMinorVersion()
     then: 'The version patch version should be zero'
       sut.patch() == 0
   }
 
-  def 'Doing a minor release should increment the minor version' () {
+  def 'Incrementing the minor version should add one to the minor version' () {
     given: 'The version is 0.1.0'  
       def sut = new ProjectVersion()
     when: 'I do a minor release'
-      sut.minorRelease()
+      sut.incrementMinorVersion()
     then: 'The minor version should be two'
       sut.minor() == 2
   }
 
-  def 'Doing a major release should reset the tag' () {
+  def 'Incrementing the major version should reset the tag' () {
     given: 'The version is 0.1.0-bacon.1'  
       def sut = new ProjectVersion(tag:'bacon.1')
     when: 'I do a major release'
-      sut.majorRelease()
+      sut.incrementMajorVersion()
     then: 'The version tag should be reset'
       sut.tag() == ''
   }
 
-  def 'Doing a major release should reset the meta info' () {
+  def 'Incrementing the major version should reset the meta info' () {
     given: 'The version is 0.1.0+bacon.1'  
       def sut = new ProjectVersion(metaInfo:'bacon.1')
     when: 'I do a major release'
-      sut.majorRelease()
+      sut.incrementMajorVersion()
     then: 'The version meta info should be reset'
       sut.metaInfo() == ''
   }
 
-  def 'Doing a major release should reset the patch version' () {
+  def 'Incrementing the major version should reset the patch version' () {
     given: 'The version is 0.1.1'  
       def sut = new ProjectVersion(patch:1)
     when: 'I do a major release'
-      sut.majorRelease()
+      sut.incrementMajorVersion()
     then: 'The version patch version should be zero'
       sut.patch() == 0
   }
 
-  def 'Doing a major release should reset the minor version' () {
+  def 'Incrementing the major version should reset the minor version' () {
     given: 'The version is 0.1.0'  
       def sut = new ProjectVersion()
     when: 'I do a major release'
-      sut.majorRelease()
+      sut.incrementMajorVersion()
     then: 'The minor version should be zero'
       sut.minor() == 0
   }
 
-  def 'Doing a major release should increment the major version' () {
+  def 'Incrementing the major version should add one to the major version' () {
     given: 'The version is 0.1.0'  
       def sut = new ProjectVersion()
     when: 'I do a major release'
-      sut.majorRelease()
+      sut.incrementMajorVersion()
     then: 'The major version should be two'
       sut.major() == 1
   }
@@ -116,7 +116,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 0.1.0-SNAPSHOT+1.0' 
       def sut = new ProjectVersion(tag:'SNAPSHOT', metaInfo:'1.0')
     when: 'I do a build'
-      sut.normalBuild()
+      sut.addPreReleaseDetails()
     then: 'The tag and meta info should be reset'
       sut.tag() == ''
       sut.metaInfo() == ''
@@ -126,7 +126,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 0.1.0' 
       def sut = new ProjectVersion()
     when: 'I do a build with the tag SNAPSHOT'
-      sut.normalBuild(tag:'SNAPSHOT')
+      sut.addPreReleaseDetails(tag:'SNAPSHOT')
     then: 'the tag should be SNAPSHOT'
       sut.tag() == 'SNAPSHOT'
   }
@@ -135,7 +135,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 0.1.0' 
       def sut = new ProjectVersion()
     when: 'I do a build with the meta info BACON'
-      sut.normalBuild(metaInfo:'BACON')
+      sut.addPreReleaseDetails(metaInfo:'BACON')
     then: 'the meta info should be BACON'
       sut.metaInfo() == 'BACON'
   }
@@ -144,7 +144,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 0.1.2' 
       def sut = new ProjectVersion(patch:2)
     when: 'I do a build'
-      sut.normalBuild()
+      sut.addPreReleaseDetails()
     then: 'Then the patch version should still be two'
       sut.patch() == 2
   }
@@ -153,7 +153,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 0.2.0' 
       def sut = new ProjectVersion(minor:2)
     when: 'I do a build'
-      sut.normalBuild()
+      sut.addPreReleaseDetails()
     then: 'Then the minor version should still be two'
       sut.minor() == 2
   }
@@ -162,7 +162,7 @@ class ProjectVersionReleaseTests extends Specification {
     given: 'The version is 2.1.0' 
       def sut = new ProjectVersion(major:2)
     when: 'I do a build'
-      sut.normalBuild()
+      sut.addPreReleaseDetails()
     then: 'Then the major version should still be two'
       sut.major() == 2
   }
@@ -171,7 +171,7 @@ class ProjectVersionReleaseTests extends Specification {
     given:'The version is 0.1.0' 
       def sut = new ProjectVersion()
     when: 'I do a build with an invalid tag'
-      sut.normalBuild(tag:'*')
+      sut.addPreReleaseDetails(tag:'*')
     then: 'An IllegalArgumentExeption will be thrown'
       thrown(IllegalArgumentException)
   }
@@ -180,7 +180,7 @@ class ProjectVersionReleaseTests extends Specification {
     given:'The version is 0.1.0' 
       def sut = new ProjectVersion()
     when: 'I do a build with invalid meta info'
-      sut.normalBuild(metaInfo:'*')
+      sut.addPreReleaseDetails(metaInfo:'*')
     then: 'An IllegalArgumentExeption will be thrown'
       thrown(IllegalArgumentException)
   }
