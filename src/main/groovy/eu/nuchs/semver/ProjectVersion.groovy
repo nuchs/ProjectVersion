@@ -29,6 +29,18 @@ class ProjectVersion implements Comparable<ProjectVersion> {
     resetParts(['patch', 'minor'], ['tag', 'metaInfo'])
   }
 
+  int major() { versionInfo.major }
+  int minor() { versionInfo.minor }
+  int patch() { versionInfo.patch }
+  String tag() { versionInfo.tag }
+  String metaInfo() { versionInfo.metaInfo }
+
+  String toString() {
+    String version = major() + "." + minor()+ "." + patch() 
+    version += (tag() == "") ? tag() : "-" + tag()
+    version += (metaInfo() == "") ? metaInfo() : "+" + metaInfo()
+  }
+
   int compareTo (ProjectVersion other) {
     return major() <=> other.major() ?:
            minor() <=> other.minor() ?:
@@ -38,11 +50,7 @@ class ProjectVersion implements Comparable<ProjectVersion> {
            tag().compareTo(other.tag())
   }
 
-  int major() { versionInfo.major }
-  int minor() { versionInfo.minor }
-  int patch() { versionInfo.patch }
-  String tag() { versionInfo.tag }
-  String metaInfo() { versionInfo.metaInfo }
+  /* ----- Private Implementation ----- */
 
   private def resetParts (List numberParts, List stringParts) {
     numberParts.each { part -> versionInfo[part] = 0 }

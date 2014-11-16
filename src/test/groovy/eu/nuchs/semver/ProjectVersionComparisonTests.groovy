@@ -4,7 +4,7 @@ import spock.lang.*
 
 class ProjectVersionComparisonTests extends Specification {
 
-  def 'TheVersionWithTheLargestMajorVersionIsMostRecent' () {
+  def 'The Version With The Largest Major Version Is Most Recent' () {
     given : 'Two versions 1.3.3 and 2.0.0' 
       def sut1 = new ProjectVersion(major:1, minor:3, patch:3)
       def sut2 = new ProjectVersion(major:2, minor:0, patch:0)
@@ -13,7 +13,7 @@ class ProjectVersionComparisonTests extends Specification {
       assert sut2 > sut1
   }
 
-  def 'IfMajorVersionsAreEqualTheVersionWithTheLargestMinorVersionIsMostRecent' () {
+  def 'If Major Versions Are Equal The Version With The Largest Minor Version Is Most Recent' () {
     given : 'Two versions 0.3.0 and 0.2.3' 
       def sut1 = new ProjectVersion(minor:3)
       def sut2 = new ProjectVersion(minor:2, patch:3)
@@ -22,7 +22,7 @@ class ProjectVersionComparisonTests extends Specification {
       assert sut2 < sut1
   }
 
-  def 'IfMajorAndMinorVersionsAreEqualTheVersionWithTheLargestPatchVersionIsMostRecent' () {
+  def 'If Major And Minor Versions Are Equal The Version With The Largest Patch Version Is Most Recent' () {
     given : 'Two versions 0.1.0 and 0.1.3' 
       def sut1 = new ProjectVersion()
       def sut2 = new ProjectVersion(patch:3)
@@ -31,7 +31,7 @@ class ProjectVersionComparisonTests extends Specification {
       assert sut2 > sut1
   }
 
-  def 'IfNumericVersionsAreEqualTheVersionWithoutATagIsMoreRecent' () {
+  def 'If Numeric Versions Are Equal The Version Without A Tag Is More Recent' () {
     given : 'Two versions 0.1.0 and 0.1.0-ALPHA' 
       def sut1 = new ProjectVersion()
       def sut2 = new ProjectVersion(tag:'ALPHA')
@@ -40,7 +40,7 @@ class ProjectVersionComparisonTests extends Specification {
       assert sut2 < sut1
   }
 
-  def 'IdenticalVersionsAreConsideredEqual' () {
+  def 'Identical Versions Are Considered Equal' () {
     given : 'Two versions 1.2.3-ALPHA and 1.2.3-ALPHA' 
       def sut1 = new ProjectVersion(major:1, minor:2, patch:3, tag:'ALPHA')
       def sut2 = new ProjectVersion(major:1, minor:2, patch:3, tag:'ALPHA')
