@@ -1,0 +1,16 @@
+buildscript {
+  repositories {
+    maven {
+      url uri('../Repo')
+    }
+  }
+
+  dependencies {
+    classpath group : 'eu.nuchs',
+              name : 'semver-plugin',
+              version : '0.1.0-SNAPSHOT';
+  }
+}
+
+apply plugin:'eu.nuchs.semver'
+
