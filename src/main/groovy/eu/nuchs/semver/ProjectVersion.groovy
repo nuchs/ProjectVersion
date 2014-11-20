@@ -36,9 +36,9 @@ class ProjectVersion implements Comparable<ProjectVersion> {
   String metaInfo() { versionInfo.metaInfo }
 
   String toString() {
-    String version = major() + "." + minor()+ "." + patch() 
-    version += (tag() == "") ? tag() : "-" + tag()
-    version += (metaInfo() == "") ? metaInfo() : "+" + metaInfo()
+    String tag = (tag() == '') ? '' : '-' + tag()
+    String metaInfo = (metaInfo() == '') ? '' : '+' + metaInfo()
+    "${major()}.${minor()}.${patch()}$tag$metaInfo"
   }
 
   int compareTo (ProjectVersion other) {

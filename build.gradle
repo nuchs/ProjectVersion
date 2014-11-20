@@ -1,10 +1,25 @@
 apply plugin:'groovy'
+apply plugin:'maven'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-  compile "org.codehaus.groovy:groovy-all:2.3.7"
-  testCompile "org.spockframework:spock-core:0.7-groovy-2.0" 
+  compile gradleApi()
+
+  testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+    exclude group: 'org.codehaus.groovy'
+  }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+            pom.groupId = 'eu.nuchs'
+            pom.artifactId = 'semver-plugin'
+            pom.version = '0.1.0-SNAPSHOT'
+        }
+    }
 }
