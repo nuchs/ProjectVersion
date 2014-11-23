@@ -5,9 +5,9 @@ import groovy.json.*
 
 class SemverPlugin implements Plugin<Project> {
 
-  void apply(Project project) {
-    config = new SemVerPluginConvention()
-    project.convention.plugins.SemVer = config
+  void apply(Project aProject) {
+    project = aProject
+    config = project.convention.plugins.SemVer = new SemVerPluginConvention()
 
     project.task('startVersioning') << {
       loadedVersion = new ProjectVersion()
@@ -19,19 +19,42 @@ class SemverPlugin implements Plugin<Project> {
     }
 
     project.task('majorRelease') << {
-      version().incrementMajorVersion()
-      persistVersion()
+      release(version().&incrementMajorVersion)
     }
 
     project.task('minorRelease') << {
-      version().incrementMinorVersion()
-      persistVersion()
+      release(version().&incrementMinorVersion)
     }
 
     project.task('patchRelease') << {
-      version().incrementPatchVersion()
-      persistVersion()
+      release(version().&incrementPatchVersion)
     }
+
+    project.task('majorPreRelease') << {
+      release(version().&incrementMajorVersion, tag(), metaInfo())
+    }
+
+    project.task('minorPreRelease') << {
+      release(version().&incrementMinorVersion, tag(), metaInfo())
+    }
+
+    project.task('patchPreRelease') << {
+      release(version().&incrementPatchVersion, tag(), metaInfo())
+    }
+  }
+
+  private void release(Closure releaseType, String tag='', String metaInfo='') {
+    releaseType()
+    version().addPreReleaseDetails([tag:tag, metaInfo:metaInfo])
+    persistVersion()
+  }
+
+  private String tag() {
+    project.hasProperty('tag') ? project.tag : config.tag
+  }
+
+  private String metaInfo() {
+    project.hasProperty('metaInfo') ? project.metaInfo : config.metaInfo
   }
 
   private ProjectVersion version () {
@@ -49,6 +72,7 @@ class SemverPlugin implements Plugin<Project> {
   }
 
   private def config
+  private def project
   private def json = new JsonSerialiser()
   private ProjectVersion loadedVersion = null;
 }
